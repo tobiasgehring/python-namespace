@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-NAME = 'namespace'
+NAME = 'python-namespace'
 AUTHOR = 'Tobias Gehring'
 AUTHOR_EMAIL = 'tobias.gehring@fysik.dtu.dk'
 LICENSE = 'LGPLv3'
