@@ -51,12 +51,12 @@ class Scope(SomeBaseClass):
         class edge:
             @property
             def level(self):
-                # For nested namespaces the parent namespace can be accessed with the "parent" property
-                return self.root.send_command('trigger{0}:edge:level?'.format(self.parent.index))
+                # For nested namespaces the parent namespace can be accessed with the "parent_namespace" property
+                return self.root.send_command('trigger{0}:edge:level?'.format(self.parent_namespace.index))
 
             @level.setter
             def level(self, value):
-                self.root.send_command('trigger{0}:edge:level {1}'.format(self.parent.index, value))
+                self.root.send_command('trigger{0}:edge:level {1}'.format(self.parent_namespace.index, value))
 
 ```
 
@@ -80,7 +80,7 @@ scope.acquisition.start()
 A namespace has the following attributes
 
 - `root`: link to the class object.
-- `parent`: link to the parent namespace
+- `parent_namespace`: link to the parent namespace
 
 Repeated namespaces have furthermore the following attributes
 
