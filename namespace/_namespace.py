@@ -49,29 +49,25 @@ class Namespace:
         def offset(self, value):
             self.root.send_command('channel{0}:offset {1}'.format(self.index, value))
     """
-
     def __init__(self, cls):
         self.cls = cls
 
     def __get__(self, instance, owner):
-        if not instance:
+        if instance is None:
             return self.cls
-
-        name = self.cls.__name__ + 'cached'
-
-        # if we are already cached, use this version
-        if name in instance.__dict__:
-            return instance.__dict__[name]
 
         # create instance
         namespace = self.cls()
         # parent
         namespace.parent_namespace = instance
-        # find root, root has no root attribute
-        namespace.root = instance
-        while hasattr(namespace.root, 'root'):
-            namespace.root = namespace.root.root
-        setattr(instance, name, namespace)
+        # root. instance is root if it does not contain a root attribute
+        try:
+            namespace.root = instance.root
+        except AttributeError:
+            namespace.root = instance
+
+        # save it in the dictionary
+        instance.__dict__[self.cls.__name__] = namespace
         return namespace
 
     @classmethod
@@ -87,19 +83,14 @@ class Namespace:
                 self.count = count
 
             def __get__(self, instance, owner):
-                if not instance:
+                if instance is None:
                     return self.cls
 
-                name = self.cls.__name__ + 'cached'
-
-                # if we are already cached, use this version
-                if name in instance.__dict__:
-                    return instance.__dict__[name]
-
                 # find root, root has no root attribute
-                root = instance
-                while hasattr(root, 'root'):
-                    root = root.root
+                try:
+                    root = instance.root
+                except AttributeError:
+                    root = instance
 
                 # determine number of instances
                 # if it is a string, check namespace container instance first, then root
@@ -120,7 +111,9 @@ class Namespace:
                     namespaces[ii].parent_namespace = instance
                     namespaces[ii].root = root
                     namespaces[ii].index = ii
-                setattr(instance, name, namespaces)
+                    
+                # save it in the dictionary
+                instance.__dict__[self.cls.__name__] = namespaces
                 return namespaces
 
         return NamespaceRepeat
