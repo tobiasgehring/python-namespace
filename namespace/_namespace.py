@@ -1,4 +1,9 @@
 
+class NamespaceError(Exception):
+    """An error raised by the namespace package"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
 
 class Namespace:
     """
@@ -82,6 +87,10 @@ class Namespace:
                 self.cls = cls
                 self.count = count
 
+            def _raise_namespace_error(self, message):
+                """Raises a namespace error with a bit of additional information"""
+                raise NamespaceError("Namespace class '{}': {}".format(self.cls.__name__, message))
+
             def __get__(self, instance, owner):
                 if instance is None:
                     return self.cls
@@ -93,17 +102,22 @@ class Namespace:
                     root = instance
 
                 # determine number of instances
+
                 # if it is a string, check namespace container instance first, then root
+                if isinstance(self.count, str):
+                    value = getattr(instance, self.count, getattr(root, self.count, None))
+                    if value is None:
+                        self._raise_namespace_error("Could not find the field '{}' on namespace parent '{}' or namespace root '{}' (in that order)".format(
+                            self.count, type(instance).__name__, type(root).__name__
+                        ))
+                    self.count = value
+
+                # Validate that the given count is valid
                 if isinstance(self.count, int):
                     if self.count <= 0:
-                        raise Exception('Invalid value for count: {0}.'.format(self.count))
-                elif isinstance(self.count, str):
-                    value = getattr(instance, self.count, None)
-                    if value is None:
-                        value = getattr(root, self.count, 1)
-                    self.count = value
+                        self._raise_namespace_error('Namespace.repeat value must be a positive integer. Instead it was: {0}.'.format(self.count))
                 else:
-                    raise Exception('Invalid value for count: {0}.'.format(self.count))
+                    self._raise_namespace_error('Namespace.repeat value must be a positive integer. Instead it was: {0}.'.format(self.count))
 
                 # create instances
                 namespaces = [self.cls() for ii in range(self.count)]
