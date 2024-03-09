@@ -4,7 +4,7 @@ AUTHOR = 'Tobias Gehring'
 AUTHOR_EMAIL = 'tobias.gehring@fysik.dtu.dk'
 LICENSE = 'LGPLv3'
 URL = 'https://github.com/tobiasgehring/python-namespace'
-DOWNLOAD_URL = 'https://github.com/tobiasgehring/python-namespace/archive/v0.1.tar.gz'
+DOWNLOAD_URL = 'https://github.com/tobiasgehring/python-namespace/archive/v1.0.tar.gz'
 DESCRIPTION = 'Namespaces for class properties and methods'
 LONG_DESCRIPTION = '''\
 namespace provides namespaces for class properties and methods
@@ -20,8 +20,8 @@ CLASSIFIERS = [
     'Operating System :: Microsoft :: Windows'
 ]
 PLATFORMS = ['all']
-MAJOR               = 0
-MINOR               = 2
+MAJOR               = 1
+MINOR               = 0
 ISRELEASED          = False
 VERSION             = '%d.%d' % (MAJOR, MINOR)
 
